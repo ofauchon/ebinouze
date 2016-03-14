@@ -17,6 +17,10 @@
     You should have received a copy of the GNU General Public License
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef MISC_H
+#define MISC_H
+#include <stdint.h> 
+
 
 typedef struct {
   uint16_t firmware_version; 
@@ -27,3 +31,4 @@ typedef struct {
 
 t_config *myconfig; 
 
+#endif

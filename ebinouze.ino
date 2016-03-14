@@ -1,3 +1,5 @@
+
+
 /*
     This file is part of E-Binouze.
     E-Binouze is a brewery control system
@@ -18,22 +20,23 @@
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include <Wire.h>
-
-#include <LiquidCrystal.h>
 #include <EEPROM.h>
+#include <LiquidCrystal.h>
 
-#include "MENWIZ.h"
 #include "misc.h"
+#include "menu.h"
 
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-
+Menu menu(&lcd);
 
 
 void setup() 
 {
+  EEPROM[5]++; 
   // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
   pinMode(53, OUTPUT); 
+  menu.mComputeMenu();
 }
 
 
@@ -74,14 +77,6 @@ void config_read(t_config *pConf)
 
 
 
-void update_lcd()
-{
-        lcd.setCursor(0,0); lcd.print("e-binouze 4 Yann");
-        uint8_t boot=EEPROM[5]; 
-        lcd.setCursor(0,1); lcd.print(boot);
-        //EEPROM[5]++; 
-}
-
 
 
 void loop() {
@@ -89,7 +84,17 @@ void loop() {
   //lcd.noDisplay();
   // Turn on the display:
   lcd.display();
-  update_lcd(); 
-  delay(1000); 
+  menu.mUpdateLcd(); 
+  delay(1000); menu.mKeypress('D'); menu.mUpdateLcd(); 
+  delay(1000); menu.mKeypress('D'); menu.mUpdateLcd(); 
+  delay(1000); menu.mKeypress('R'); menu.mUpdateLcd(); 
+  delay(1000); menu.mKeypress('L'); menu.mUpdateLcd(); 
+  delay(1000); menu.mKeypress('D'); menu.mUpdateLcd(); 
+  delay(1000); menu.mKeypress('R'); menu.mUpdateLcd(); 
+  delay(1000); menu.mKeypress('L'); menu.mUpdateLcd(); 
+
+
+
+  
 }
 

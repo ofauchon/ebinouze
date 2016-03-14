@@ -16,36 +16,28 @@
 
     You should have received a copy of the GNU General Public License
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+
 */
-
-void up_key(uint8_t bt){
-	switch (mpos){
-		1:	
-			if (bt == 2) mpos=2;
-			if (bt == 5) mpos=11;
-			break; 
-		2:	
-			if (bt == 2) mpos=0;
-			if (bt == 5) mpos=21;
-			break; 
-	}
-}
-	
-
-void gmenu(){
-	switch (mpos){
-		1:	
-			lcd.setCursor(0,0); lcd.print("Configuration");
-			break;
-		2:
-			lcd.setCursor(0,0); lcd.print("Information");
-			break; 
-		21:
-			lcd.setCursor(0,0); lcd.print("Temp1:");
-			break; 
+#ifndef MENU_H
+#define MENU_H
+#include <stdint.h>
+#include <LiquidCrystal.h>
 
 
-	}
-}
+class Menu
+{
+  public: 
+  Menu(LiquidCrystal *lcd); 
+  void mComputeMenu(void);
+  void mUpdateLcd(void);
+  void mKeypress(char bt);
+  LiquidCrystal *_lcd; 
 
+ private:
+  char mline1[17];
+  char mline2[17];  
+  uint16_t mpos=0; 
 
+ };
+
+#endif
