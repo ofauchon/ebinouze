@@ -1,5 +1,6 @@
 
 
+
 /*
     This file is part of E-Binouze.
     E-Binouze is a brewery control system
@@ -18,25 +19,56 @@
 
     You should have received a copy of the GNU General Public License
     along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+
+Additionnal lib : 
+http://www.pjrc.com/teensy/arduino_libraries/OneWire.zip
+http://www.hobbytronics.co.uk/datasheets/DallasTemperature_360.zip
+
+Serial port: 
+
 */
-#include <Wire.h>
+#include <OneWire.h>
 #include <EEPROM.h>
 #include <LiquidCrystal.h>
+#include <DallasTemperature.h>
 
 #include "misc.h"
 #include "menu.h"
 
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
-Menu menu(&lcd);
+
+t_config myConfig; 
+LiquidCrystal lcd(30, 31, 32, 33, 34, 35);
+Menu menu(&lcd,&myConfig);
+
+// DS18S20
+OneWire oneWire(ONEWIRE_DS);
+DallasTemperature sensors(&oneWire);
+
 
 
 void setup() 
 {
-  EEPROM[5]++; 
-  // set up the LCD's number of columns and rows:
+  // Increase boot counter
+  EEPROM[EE_BOOT]++; 
+  
+  // Configure LCD
   lcd.begin(16, 2);
-  pinMode(53, OUTPUT); 
+  lcd.display();
+
+
+  // Configure output PIN
+  //pinMode(PIN_LED, OUTPUT); 
+  //digitalWrite(PIN_LED,HIGH); 
+
+  // Initialize sensors
+  sensors.begin();
+  
+  // Initial menu setup
   menu.mComputeMenu();
+
+  // Serial port
+  Serial.begin(115200);    // start serial port
+  Serial.println("YourDuinoStarter Example: DS18B20 Temperature Sensor Reading");
 }
 
 
@@ -76,24 +108,36 @@ void config_read(t_config *pConf)
 //---------------------------------- 
 
 
+void test()
+{
+  //Serial.print("Reading temperatures..."); 
+  sensors.requestTemperatures();
+  //Serial.println("Done");
+  
+  float t=sensors.getTempCByIndex(0);
+  Serial.println(t,2);
+  delay(1000);
+
+  char c[10];
+  sprintf(c,"%04d", (uint16_t)(t*100)); 
+  lcd.setCursor(0,0); 
+  lcd.print(c);
+}
 
 
 
 void loop() {
-  // Turn off the display:
-  //lcd.noDisplay();
-  // Turn on the display:
-  lcd.display();
-  menu.mUpdateLcd(); 
-  delay(1000); menu.mKeypress('D'); menu.mUpdateLcd(); 
-  delay(1000); menu.mKeypress('D'); menu.mUpdateLcd(); 
-  delay(1000); menu.mKeypress('R'); menu.mUpdateLcd(); 
-  delay(1000); menu.mKeypress('L'); menu.mUpdateLcd(); 
-  delay(1000); menu.mKeypress('D'); menu.mUpdateLcd(); 
-  delay(1000); menu.mKeypress('R'); menu.mUpdateLcd(); 
-  delay(1000); menu.mKeypress('L'); menu.mUpdateLcd(); 
+  //menu.mUpdateLcd();
 
+  sensors.requestTemperatures();
+  myConfig.curtemp=sensors.getTempCByIndex(0);
 
+  uint8_t doo=1; 
+  if (doo--){
+    delay(1000); menu.mKeypress('D'); menu.mUpdateLcd(); 
+    delay(1000); menu.mKeypress('R'); menu.mUpdateLcd(); 
+  }
+  
 
   
 }

@@ -32,9 +32,10 @@ m=4000   ABOUT
 #include "menu.h"
 
 
-Menu::Menu(LiquidCrystal *lcd)
+Menu::Menu(LiquidCrystal *lcd, t_config *conf)
 {
   _lcd=lcd;
+  _conf=conf;
 }
 
 void Menu::mKeypress(char bt){
@@ -59,8 +60,9 @@ void Menu::mKeypress(char bt){
 void Menu::mComputeMenu(void){
   sprintf(mline1,"               ");
   sprintf(mline2,"               ");
-  if (mpos==0) sprintf(mline1,   "Welcome 0       "); 
+  if (mpos==0) sprintf(mline1,    "e-binouze       "); 
   if (mpos==1000)  sprintf(mline1,"Diagnose        "); 
+  if (mpos==1001)  sprintf(mline1,"Temp:%04d         ", (uint16_t)(_conf->curtemp*100)); 
   if (mpos==2000)  sprintf(mline1,"Configuration   "); 
   if (mpos==3000)  sprintf(mline1,"Run program     ");
   if (mpos==4000)  sprintf(mline1,"About           ");
